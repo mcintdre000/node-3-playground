@@ -19,7 +19,7 @@ function legPressCheck(req, res, next) {
   if (req.body.howManyLegPressesCanTylerDo === answers.howManyLegPressesCanTylerDo) {
     next();
   } else {
-    res.status(400).send('You failed challenge 2');
+    res.status(400).send('You passed challenge 1! But you failed challenge 2');
   }
 }
 
@@ -28,7 +28,7 @@ function awesomenessCheck(req, res, next) {
     if (req.body.whoIsAwesome === response.data) {
       next();
     } else {
-      res.status(400).send('You failed challenge 3');
+      res.status(400).send('You passed challenge 2! But you failed challenge 3');
     }
   }).catch(error => {
     console.log('error', error);
@@ -36,11 +36,15 @@ function awesomenessCheck(req, res, next) {
 }
 
 app.post('/challenge', security1, legPressCheck, awesomenessCheck, (req, res) => {
-  console.log(req.body.name + ' has completed the challenge!');
-  res.json({
-    message: 'You did it!',
-    whoIsAwesome: 'you!',
-  });
+  if (req.body.name) {
+    console.log(req.body.name + ' has completed the challenge!');
+    res.json({
+      message: 'You did it!',
+      whoIsAwesome: 'you!',
+    });
+  } else {
+    res.status(400).send('You passed challenge 3, but forgot to specify a name!');
+  }
 })
 
 app.get('/who', (req, res) => {
